@@ -1,4 +1,4 @@
-/*! cornerstone-tools - 1.1.3 - 2017-12-13 | (c) 2017 Chris Hafey | https://github.com/cornerstonejs/cornerstoneTools */
+/*! cornerstone-tools - 1.1.4 - 2018-02-14 | (c) 2017 Chris Hafey | https://github.com/cornerstonejs/cornerstoneTools */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -10913,6 +10913,12 @@ function chooseLocation(e, eventData) {
     // Find within the element's stack the closest image plane to selected location
     stackData.imageIds.forEach(function (imageId, index) {
       var imagePlane = cornerstone.metaData.get('imagePlaneModule', imageId);
+
+      // Skip if the image plane is not ready
+      if (!imagePlane || !imagePlane.imagePositionPatient || !imagePlane.rowCosines || !imagePlane.columnCosines) {
+        return;
+      }
+
       var imagePosition = (0, _convertToVector2.default)(imagePlane.imagePositionPatient);
       var row = (0, _convertToVector2.default)(imagePlane.rowCosines);
       var column = (0, _convertToVector2.default)(imagePlane.columnCosines);
