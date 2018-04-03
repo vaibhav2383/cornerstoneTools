@@ -98,13 +98,15 @@ function createNewMeasurement (eventData) {
         x: eventData.currentPoints.image.x,
         y: eventData.currentPoints.image.y,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       end: {
         x: eventData.currentPoints.image.x,
         y: eventData.currentPoints.image.y,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       textBox: {
         active: false,

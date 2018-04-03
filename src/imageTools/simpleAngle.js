@@ -27,19 +27,22 @@ function createNewMeasurement (mouseEventData) {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       middle: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: true
+        active: true,
+        allowedOutsideImage: true
       },
       end: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       textBox: {
         active: false,

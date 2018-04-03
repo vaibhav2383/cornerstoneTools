@@ -22,25 +22,29 @@ function createNewMeasurement (mouseEventData) {
         x: mouseEventData.currentPoints.image.x - 20,
         y: mouseEventData.currentPoints.image.y + 10,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       end: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y,
         highlight: true,
-        active: true
+        active: true,
+        allowedOutsideImage: true
       },
       start2: {
         x: mouseEventData.currentPoints.image.x - 20,
         y: mouseEventData.currentPoints.image.y + 10,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       },
       end2: {
         x: mouseEventData.currentPoints.image.x,
         y: mouseEventData.currentPoints.image.y + 20,
         highlight: true,
-        active: false
+        active: false,
+        allowedOutsideImage: true
       }
     }
   };
