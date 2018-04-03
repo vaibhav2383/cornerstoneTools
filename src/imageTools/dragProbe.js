@@ -2,9 +2,11 @@ import EVENTS from '../events.js';
 import external from '../externalModules.js';
 import simpleMouseButtonTool from './simpleMouseButtonTool.js';
 import touchDragTool from './touchDragTool.js';
+import toolStyle from '../stateManagement/toolStyle.js';
 import textStyle from '../stateManagement/textStyle.js';
 import toolColors from '../stateManagement/toolColors.js';
 import drawTextBox from '../util/drawTextBox.js';
+import drawCrosshair from '../util/drawCrosshair.js';
 import getRGBPixels from '../util/getRGBPixels.js';
 import calculateSUV from '../util/calculateSUV.js';
 import isMouseButtonEnabled from '../util/isMouseButtonEnabled.js';
@@ -26,6 +28,7 @@ function defaultStrategy (eventData) {
   const font = textStyle.getFont();
   const fontHeight = textStyle.getFontSize();
   const config = dragProbe.getConfiguration();
+  const lineWidth = toolStyle.getToolWidth();
 
   context.save();
 
@@ -43,12 +46,12 @@ function defaultStrategy (eventData) {
     str;
 
   if (x < 0 || y < 0 || x >= eventData.image.columns || y >= eventData.image.rows) {
-    return;
-  }
-
-  if (eventData.image.color) {
+    // Draw text
+    text = 'x: n/a , y: n/a';
+    str = 'SP: n/a MO: n/a';
+  } else if (eventData.image.color) {
     storedPixels = getRGBPixels(eventData.element, x, y, 1, 1);
-    text = `${x}, ${y}`;
+    text = `x: ${x}, y: ${y}`;
     str = `R: ${storedPixels[0]} G: ${storedPixels[1]} B: ${storedPixels[2]} A: ${storedPixels[3]}`;
   } else {
     storedPixels = cornerstone.getStoredPixels(eventData.element, x, y, 1, 1);
@@ -57,7 +60,7 @@ function defaultStrategy (eventData) {
     const suv = calculateSUV(eventData.image, sp);
 
     // Draw text
-    text = `${x}, ${y}`;
+    text = `x: ${x}, y: ${y}`;
     str = `SP: ${sp} MO: ${parseFloat(mo.toFixed(3))}`;
     if (suv) {
       str += ` SUV: ${parseFloat(suv.toFixed(3))}`;
@@ -68,13 +71,21 @@ function defaultStrategy (eventData) {
   const coords = {
     // Translate the x/y away from the cursor
     x: eventData.currentPoints.image.x + 3,
-    y: eventData.currentPoints.image.y - 3
+    y: eventData.currentPoints.image.y + 3
   };
   const textCoords = cornerstone.pixelToCanvas(eventData.element, coords);
 
   context.font = font;
   context.fillStyle = color;
+  // Draw Crosshair
+  const crossCoords = {
+    x: eventData.currentPoints.image.x,
+    y: eventData.currentPoints.image.y
+  };
+  const cordsCross = cornerstone.pixelToCanvas(eventData.element, crossCoords);
+  const crossColor = 'white';
 
+  drawCrosshair(context, cordsCross.x, cordsCross.y, crossColor, lineWidth);
   drawTextBox(context, str, textCoords.x, textCoords.y + fontHeight + 5, color);
   drawTextBox(context, text, textCoords.x, textCoords.y, color);
   context.restore();
@@ -187,6 +198,7 @@ function mouseUpCallback (e) {
   const eventData = e.detail;
   const element = eventData.element;
 
+  element.classList.remove('noCursor');
   element.removeEventListener(EVENTS.IMAGE_RENDERED, imageRenderedCallback);
   element.removeEventListener(EVENTS.MOUSE_DRAG, dragCallback);
   element.removeEventListener(EVENTS.MOUSE_UP, mouseUpCallback);
@@ -199,6 +211,7 @@ function mouseDownCallback (e) {
   const element = eventData.element;
   const options = getToolOptions(toolType, element);
 
+  element.classList.add('noCursor');
   if (isMouseButtonEnabled(eventData.which, options.mouseButtonMask)) {
     element.addEventListener(EVENTS.IMAGE_RENDERED, imageRenderedCallback);
     element.addEventListener(EVENTS.MOUSE_DRAG, dragCallback);
