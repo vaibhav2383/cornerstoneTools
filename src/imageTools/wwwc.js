@@ -4,6 +4,7 @@ import simpleMouseButtonTool from './simpleMouseButtonTool.js';
 import touchDragTool from './touchDragTool.js';
 import isMouseButtonEnabled from '../util/isMouseButtonEnabled.js';
 import { getToolOptions } from '../toolOptions.js';
+import triggerEvent from '../util/triggerEvent.js';
 
 const toolType = 'wwwc';
 
@@ -53,6 +54,7 @@ function mouseDragCallback (e) {
 
   wwwc.strategy(eventData);
   external.cornerstone.setViewport(eventData.element, eventData.viewport);
+  triggerEvent(eventData.element, EVENTS.WWWC_CHANGED, eventData); // Trigger WW/WC change event
 }
 
 function touchDragCallback (e) {
@@ -84,6 +86,7 @@ function touchDragCallback (e) {
   }
 
   external.cornerstone.setViewport(dragData.element, dragData.viewport);
+  triggerEvent(dragData.element, EVENTS.WWWC_CHANGED, dragData); // Trigger WW/WC change event
 }
 
 const wwwc = simpleMouseButtonTool(mouseDownCallback, toolType);
